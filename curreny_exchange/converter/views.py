@@ -23,7 +23,7 @@ class ViewRates(ReadOnlyModelViewSet):
         timestamp = ExchangeRate.objects.aggregate(max_timestamp=Max('timestamp'))['max_timestamp']
         if not timestamp or timestamp < (datetime.now() - timedelta(days=1)).timestamp():
             update_rates(settings.REQUEST_ADDRESS)
-            return ExchangeRate.objects.filter(timestamp=timestamp).all()
+            return ExchangeRate.objects.filter(timestamp=timestamp)
         else:
             return ExchangeRate.objects.filter(timestamp=timestamp)
 
@@ -46,6 +46,8 @@ class Convert(GenericAPIView):
             return Response(status=HTTP_400_BAD_REQUEST, exception="Amount must be decimal")
 
         timestamp = ExchangeRate.objects.all().aggregate(max_timestamp=Max('timestamp'))['max_timestamp']
+        if not timestamp or timestamp < (datetime.now() - timedelta(days=1)).timestamp():
+            update_rates(settings.REQUEST_ADDRESS)
         from_rate = ExchangeRate.objects.get(timestamp=timestamp, currency__currency_code=from_curr).rate
         to_rate = ExchangeRate.objects.get(timestamp=timestamp, currency__currency_code=to_curr).rate
 
