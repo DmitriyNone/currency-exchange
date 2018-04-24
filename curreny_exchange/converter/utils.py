@@ -1,9 +1,5 @@
 import requests
-import json
-from datetime import datetime, timedelta
-
 from django.db.transaction import atomic
-
 from .models import CURRENCIES, ExchangeRate, Currency
 
 
