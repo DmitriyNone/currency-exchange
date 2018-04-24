@@ -5,6 +5,6 @@ list of all supported currencies and its rates:
 	
 	GET /rates/
 
-convert some amount of base currency to target currency:
+convert some amount(100) of base currency(EUR) to target currency(USD):
 	
 	GET /eur/usd/100/
