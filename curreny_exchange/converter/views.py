@@ -5,12 +5,20 @@ from datetime import datetime, timedelta
 
 from rest_framework.response import Response
 from rest_framework.viewsets import ReadOnlyModelViewSet
-from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
+from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST, HTTP_404_NOT_FOUND
 from rest_framework.generics import GenericAPIView
 
 from .models import ExchangeRate
 from .serializers import ExchangeRatesSerializer
 from .utils import update_rates, convert
+
+
+class Custom404(GenericAPIView):
+    def get(self, request):
+        return Response(
+            {'status_code': 404, 'error': 'Requested method was not found, please refer Readme.md for usage examples'},
+            status=HTTP_404_NOT_FOUND
+        )
 
 
 class ViewRates(ReadOnlyModelViewSet):
@@ -72,10 +80,10 @@ class Convert(GenericAPIView):
         result_amount = convert(from_rate, to_rate, amount)
 
         return Response(
-            {'from currency': from_curr,
-             'to currency': to_curr,
+            {'from_currency': from_curr,
+             'to_currency': to_curr,
              'amount': amount,
-             'result amount': result_amount
+             'result_amount': result_amount
              },
             status=HTTP_200_OK
         )
