@@ -25,7 +25,7 @@ SECRET_KEY = '&ciu_0dui=my#nm$+@vo704$$c!83gsp_j95!s0+e^(p)wp!e!'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['10.198.5.72', '127.0.0.1']
 
 
 # Application definition

@@ -52,8 +52,22 @@ class Convert(GenericAPIView):
         timestamp = ExchangeRate.objects.all().aggregate(max_timestamp=Max('timestamp'))['max_timestamp']
         if not timestamp or timestamp < (datetime.now() - timedelta(days=1)).timestamp():
             update_rates(settings.REQUEST_ADDRESS)
-        from_rate = ExchangeRate.objects.get(timestamp=timestamp, currency__currency_code=from_curr).rate
-        to_rate = ExchangeRate.objects.get(timestamp=timestamp, currency__currency_code=to_curr).rate
+        try:
+            from_rate = ExchangeRate.objects.get(timestamp=timestamp, currency__currency_code=from_curr).rate
+        except Exception:
+            return Response(
+                {'Exception': from_curr + ' currency is not supported.'},
+                status=HTTP_400_BAD_REQUEST,
+                exception=from_curr + ' currency is not supported.'
+            )
+        try:
+            to_rate = ExchangeRate.objects.get(timestamp=timestamp, currency__currency_code=to_curr).rate
+        except Exception:
+            return Response(
+                {'Exception': to_curr + ' currency is not supported.'},
+                status=HTTP_400_BAD_REQUEST,
+                exception=to_curr + ' currency is not supported.'
+            )
 
         result_amount = convert(from_rate, to_rate, amount)
 
