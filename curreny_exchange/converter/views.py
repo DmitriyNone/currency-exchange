@@ -43,7 +43,11 @@ class Convert(GenericAPIView):
         try:
             amount = Decimal(amount)
         except InvalidOperation:
-            return Response(status=HTTP_400_BAD_REQUEST, exception="Amount must be decimal")
+            return Response(
+                {'Exception': 'Amount must be decimal'},
+                status=HTTP_400_BAD_REQUEST,
+                exception="Amount must be decimal"
+            )
 
         timestamp = ExchangeRate.objects.all().aggregate(max_timestamp=Max('timestamp'))['max_timestamp']
         if not timestamp or timestamp < (datetime.now() - timedelta(days=1)).timestamp():
